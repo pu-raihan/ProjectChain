@@ -107,7 +107,7 @@ body {
     font-size: small;
 }
 
-#signup{
+.btn1{
     width: 40%;
     margin: 0;
     color: #fff;
@@ -120,7 +120,7 @@ body {
     transition-duration: 0.3s;
     transition-property: color;
 }
-#login {
+.btn2{
     width: 40%;
     margin: 0;
     color: rgb(255, 255, 255);
@@ -133,8 +133,9 @@ body {
     transition-duration: 0.3s;
     transition-property: color;
 }
-#signup:before,
-#login:before {
+
+.btn1:before,
+.btn2:before {
     content: "";
     position: absolute;
     z-index: -1;
@@ -150,9 +151,13 @@ body {
     transition-duration: 0.3s;
     transition-timing-function: ease-out;
 }
-#signup:hover:before,
-#login:hover:before {
+.btn1:hover:before,
+.btn2:hover:before {
     transform: scaleX(1);
+}
+#profile{
+    border-radius: 10px;
+    background-color: rgb(42, 1, 44);
 }
 
 #file-upload-btn {
@@ -246,7 +251,9 @@ body {
     font-size: x-small;
     padding: 5px 0 0 10px;
 }
-
+.font-xs{
+    font-size: x-small;
+}
 #desc {
     text-align: left;
     font-size: small;
@@ -280,7 +287,9 @@ body {
 .props {
     color: #cccccc;
 }
-
+.color1{
+    background-color: #4b0736;
+}
 .type {
     color: rgb(184, 211, 211);
     font-size: smaller;

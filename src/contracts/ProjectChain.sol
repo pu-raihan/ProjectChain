@@ -3,7 +3,13 @@ pragma solidity ^0.5.0;
 contract ProjectChain {
     string public name = "ProjectChain";
 
-    uint256 public currentUser = 0;
+    // uint256 public currentUser = 0;
+
+    uint256 public blockSize = 0;
+    mapping(uint256 => Project) public projBlock;
+
+    uint256 public blockCount = 0;
+    mapping(uint256 => Block) public chain;
 
     uint256 public projCount = 0;
     mapping(uint256 => Project) public projects;
@@ -16,18 +22,16 @@ contract ProjectChain {
         string userName;
         string userPwd;
         address payable walAdd;
-        mapping(uint256 => Project) myProjects;
+        mapping(uint256 => Project)  myProjects;
     }
-    event UserRegistered(
-        uint256 userId,
-        string userName,
-        string userPwd,
-        address payable walAdd
-    );
-    event UserLoggedIn(
-        uint256 userId
-    );
-    // Struct
+    struct Block {
+        uint256 blockId;
+        bytes32 blockHash;
+        bytes32 preHash;
+        uint256 proj1;
+        uint256 proj2;
+        uint256 proj3;
+    }
     struct Project {
         uint256 projId;
         string prevHash;
@@ -39,7 +43,18 @@ contract ProjectChain {
         uint256 uploadTime;
         address payable auther;
     }
-
+    
+    event UserRegistered(
+        uint256 userId,
+        string userName,
+        string userPwd,
+        address payable walAdd
+    );
+    event BlockMined(
+        uint256 blockId,
+        bytes32 blockHash,
+        bytes32 preHash
+    );
     event ProjUploaded(
         uint256 projId,
         string prevHash,
@@ -63,20 +78,23 @@ contract ProjectChain {
         emit UserRegistered(userCount, _userName, _pwd, msg.sender);
     }
 
-    function loginUser(uint256 _Id) public {
-        currentUser=_Id; 
-        emit UserLoggedIn(_Id);
-    //     require(bytes(_userName).length > 0);
-    //     require(msg.sender != address(0));
-    //     bytes32 pass = keccak256(abi.encodePacked(_pwd));
-    //     for (uint8 i = 1; i <= userCount; i++) {
-    //         string memory uname=users[i].userName;
-    //         if (keccak256(abi.encodePacked(uname)) == keccak256(abi.encodePacked(_userName)))
-    //             if (users[i].pwdHash == pass) {
-    //                 currentUser = users[i].userId;
-    //                 emit UserLoggedIn(userCount, _userName, pass, msg.sender);
-    //             }
-    //     }
+    function addToChain() public{
+        blockSize=0;
+        bytes32 pre;
+        if(blockCount>0) pre = chain[blockCount].blockHash;
+        blockCount++;
+        chain[blockCount].blockId = blockCount;
+        chain[blockCount].proj1 = projBlock[1].projId;
+        chain[blockCount].proj2 = projBlock[2].projId;
+        chain[blockCount].proj3 = projBlock[3].projId;
+        chain[blockCount].blockHash = keccak256(abi.encodePacked(projBlock[1].projHash,projBlock[2].projHash,projBlock[3].projHash));
+        chain[blockCount].preHash = pre;
+        projCount++;
+        projects[projCount]=projBlock[1];
+        projCount++;
+        projects[projCount]=projBlock[2];
+        projCount++;
+        projects[projCount]=projBlock[3];
     }
 
     function uploadProj(
@@ -95,13 +113,13 @@ contract ProjectChain {
         require(_projSize > 0);
 
         string memory prev;
-        if (projCount > 0) prev = projects[projCount].projHash;
-        else prev = "root";
+        if (blockSize > 0) prev = projBlock[blockSize].projHash;
+        else if (projCount > 0) prev = projects[projCount].projHash;
+        else prev = "genesis";
 
-        projCount++;
-
-        projects[projCount] = Project(
-            projCount,
+        blockSize++;
+        projBlock[blockSize] = Project(
+            projCount+blockSize,
             prev,
             _projHash,
             _projSize,
@@ -111,7 +129,9 @@ contract ProjectChain {
             now,
             msg.sender
         );
-
+        if(blockSize>=3){
+        addToChain();
+        }
         emit ProjUploaded(
             projCount,
             prev,

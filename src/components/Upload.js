@@ -4,7 +4,7 @@ class Upload extends Component {
 
     render() {
         return (
-            <div id='upload' ref={this.props.upld} className="card col-sm-8 col-md-6 mx-auto mt-5 bg-dark p-0" style={{ borderRadius: '10px' }}>
+            <div id='upload' className="card col-sm-8 col-md-6 mx-auto mt-5 bg-dark p-0" style={{ borderRadius: '10px' }}>
                 <form onSubmit={(event) => {
                     event.preventDefault()
                     const description = this.projectDesc.value

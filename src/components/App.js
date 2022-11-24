@@ -1,5 +1,5 @@
 import ProjectChain from '../abis/ProjectChain.json'
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import Main from './Main';
 import Web3 from 'web3';
 import './App.css';
@@ -8,6 +8,7 @@ const ipfsClient = require('ipfs-http-client');
 
 
 class App extends Component {
+
 
   async componentWillMount() {
     await this.loadWeb3()
@@ -54,21 +55,93 @@ class App extends Component {
       }
       const userCount = await projectchain.methods.userCount().call()
       this.setState({ userCount })
-      for (var j = userCount; j >= 1; j--) {
+      for (var j = 1; j <= userCount; j++) {
         const user = await projectchain.methods.users(j).call()
         this.setState({
           users: [...this.state.users, user]
         })
       }
-      // const currentUser = await projectchain.methods.currentUser().call()
-      // this.setState({ currentUser })
-      // window.alert('currUser ' + this.state.currentUser)
-      // window.alert('totUser ' + this.state.userCount)
+      const blockCount = await projectchain.methods.blockCount().call()
+      this.setState({ blockCount })
+      for (var k = 1; k <= blockCount; k++) {
+        var chain = await projectchain.methods.chain(k).call()
+        console.log(chain);
+        this.setState({
+          chain: [...this.state.chain, chain]
+        })
+    }
+      // window.alert('log :' + this.state.isLogged)
     } else {
-
       window.alert('ProjectChain contract not deployed to detected network.')
     }
     this.setState({ loading: false })
+  }
+
+  regUser = (uname, pwd) => {
+    for (var i = 0; i < this.state.userCount; i++) {
+      if (this.state.users[i].userName === uname) {
+        window.alert('Username : ' + uname + ' already exists');
+        return;
+      }
+    }
+    this.state.projectchain.methods.regUser(uname, pwd).send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.setState({
+        isLogged: true,
+        currentUser: this.state.userCount,
+      }, () => {
+        localStorage.setItem('isLogged', this.state.isLogged)
+        localStorage.setItem('currentUser', this.state.currentUser)
+      });
+      window.alert('Registered new user : ' + uname);
+      window.location.reload()
+    }).on('error', (e) => {
+      window.alert('Error')
+      this.setState({ loading: false })
+    })
+  }
+
+  login = (uname, pwd) => {
+    for (var i = 0; i < this.state.userCount; i++) {
+      if (this.state.users[i].userName === uname) {
+        if (this.state.users[i].userPwd === pwd) {
+          this.setState({
+            isLogged: true,
+            currentUser: this.state.users[i].userId - 1,
+          }, () => {
+            localStorage.setItem('isLogged', this.state.isLogged)
+            localStorage.setItem('currentUser', this.state.currentUser)
+          });
+          window.alert(this.state.users[i].userName + ' logged in');
+          window.location.reload()
+          // while (this.state.account !== this.state.users[i].address) {
+          //   window.alert('Please connect your wallet of this profile !!'+this.state.users[i].address);
+          //   window.location.reload()
+          // }
+          return;
+        }
+        else {
+          window.alert('Wrong password for ' + this.state.users[i].userName);
+          window.location.reload()
+          return;
+        }
+      }
+    }
+    window.alert('User does not exist');
+    window.location.reload()
+  }
+
+  logout = () => {
+    if (window.confirm('Do you really wanna logout ?')) {
+      this.setState({
+        isLogged: false,
+        currentUser: 0,
+        tab: 3
+      }, () => {
+        localStorage.setItem('isLogged', this.state.isLogged)
+        localStorage.setItem('currentUser', this.state.currentUser)
+      });
+      window.location.reload()
+    }
   }
 
   captureProject = event => {
@@ -89,7 +162,10 @@ class App extends Component {
 
   //Upload Project
   uploadProj = (description, projname) => {
-
+    // while (this.state.account !== this.state.users[this.state.currentUser].address) {
+    //   window.alert('Please connect your wallet of this profile !!');
+    //   window.location.reload()
+    // }
     const projectId = '2HkrIDtexPEboZTcRPydfz009l1';
     const projectSecret = '167dd9baab474022ca3ced2fc678e09f';
     const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
@@ -127,61 +203,7 @@ class App extends Component {
       })
     })
   }
-  regUser = (uname, pwd) => {
-    this.state.projectchain.methods.regUser(uname, pwd).send({ from: this.state.account }).on('transactionHash', (hash) => {
-      window.location.reload()
-    }).on('error', (e) => {
-      window.alert('Error')
-      this.setState({ loading: false })
-    })
-  }
 
-  // loginUser = (uname, pwd) => {
-  //   for (var i = 0; i < this.state.userCount; i++) {
-  //     if (this.state.users[i].userName === uname) {
-  //       window.alert('name' + this.state.users[i].userName);
-  //       window.alert(this.state.users[i].userPwd);
-  //       if (this.state.users[i].userPwd === pwd) {
-  //         this.state.projectchain.methods.loginUser(this.state.users[i].userId).send({ from: this.state.account }).on('transactionHash', (hash) => {
-  //           window.location.reload()
-  //           return
-  //         }).on('error', (e) => {
-  //           window.alert('Error')
-  //           this.setState({ loading: false })
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
-
-  login = (uname, pwd) => {
-    for (var i = 0; i < this.state.userCount; i++) {
-      if (this.state.users[i].userName === uname) {
-        if (this.state.users[i].userPwd === pwd) {
-          this.setState({
-            isLogged: true,
-            currentUser: this.state.users[i].userId,
-            tab:1
-          })
-          window.alert(this.state.users[i].userName+' logged in' );
-          return;
-        }
-        else{
-          window.alert('Wrong password for ' + this.state.users[i].userName);
-          return;
-        }
-      }
-    }
-    window.alert('User does not exist');
-  }
-  logout = () => {
-    if (window.confirm('Do you really wanna logout ?')) {
-      this.setState({
-        isLogged: false,
-        currentUser: 0
-      })
-    }
-  }
   showUpl = () => {
     this.setState({
       tab: 1
@@ -192,14 +214,21 @@ class App extends Component {
       tab: 2
     })
   }
-  showUser = () => {
+  showChain = () => {
     this.setState({
       tab: 3
     })
   }
+  showUser = () => {
+    this.setState({
+      tab: 4
+    })
+  }
   //Set states
   constructor(props) {
-    super(props)
+    super(props);
+    var log = localStorage.getItem('isLogged');
+    var usr = localStorage.getItem('currentUser');
     this.state = {
       account: '',
       projectchain: null,
@@ -209,10 +238,23 @@ class App extends Component {
       name: null,
       buffer: null,
       users: [],
+      chain: [],
       uname: null,
-      currentUser:0,
-      tab: 0
+      isLogged: false,
+      currentUser: +usr,
+      tab: 1
     }
+    if (log === 'true')
+      this.state = {
+        ...this.state,
+        isLogged: true
+      }
+    if (log === 'false')
+      this.state = {
+        ...this.state,
+        isLogged: false
+      }
+
 
     //Bind functions
   }
@@ -228,12 +270,15 @@ class App extends Component {
             projects={this.state.projects}
             currentUser={this.state.currentUser}
             isLogged={this.state.isLogged}
+            chain={this.state.chain}
+            users={this.state.users}
             tab={this.state.tab}
             regUser={this.regUser}
             login={this.login}
             logout={this.logout}
             showUpl={this.showUpl}
             showProj={this.showProj}
+            showChain={this.showChain}
             showUser={this.showUser}
             captureProject={this.captureProject}
             uploadProj={this.uploadProj}
