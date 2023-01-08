@@ -7,7 +7,7 @@ class Projects extends Component {
         return (
             <section className="proj center col-12" id="projchain">
                 <div className="container center">
-                    {this.props.projects.map((project, key) => {
+                    {this.props.projects.reverse().map((project, key) => {
                         return (
                             <div className="card col-lg-5 mb-5 m-3 p-0 projcard" style={{ maxWidth: '768px' }}>
                                 <p className='ids'>ID : {project.projId}</p>
@@ -20,25 +20,25 @@ class Projects extends Component {
                                     <div className='center align-top col-8 float-left mt-0' ><p className='props'>Details :</p><p> {project.projDesc}</p></div>
                                 </div>
                                 <div>
-                                    <a  
-                                        href={"https://ipfs.io/ipfs/" + project.projHash}
-                                        rel="noopener noreferrer"
-                                        target="_blank">
-                                        <button id="file-view-btn"><b>View Project</b></button></a>
+                                    {this.props.account===project.auther?
+                                        <a
+                                            href={"https://ipfs.io/ipfs/" + project.projHash}
+                                            rel="noopener noreferrer"
+                                            target="_blank">
+                                            <button id="file-view-btn"><b>View Project</b></button></a>
+                                            :<br></br>
+                                    }
                                     <br />
                                     <div className='auth props float-left'>
-                                     Owner : <a
-                                        href={"https://etherscan.io/address/" + project.auther}
-                                        rel="noopener noreferrer"
-                                        target="_blank">
-                                        {project.auther.substring(0, 10)}...{project.auther.substring(project.auther.length-3,project.auther.length)}
-                                    </a>
+                                        Owner : <a
+                                            href={"https://etherscan.io/address/" + project.auther}
+                                            rel="noopener noreferrer"
+                                            target="_blank">
+                                            {project.auther.substring(0, 10)}...{project.auther.substring(project.auther.length - 3, project.auther.length)}
+                                        </a>
                                     </div>
                                     <div className='date props'>
-                                     Date :{moment.unix(project.uploadTime).format('h:mm:ss A M/D/Y')}
-                                    </div>
-                                    <div className='date props'>
-                                     Date :<br></br>{moment.unix(project.uploadTime).format('h:mm:ss A M/D/Y')}
+                                        Date :{moment.unix(project.uploadTime).format('h:mm:ss A M/D/Y')}
                                     </div>
                                 </div>
                             </div>

@@ -17,7 +17,7 @@ class Navbar extends Component {
             <img id='logo' src={logo} className=" align-top" alt="" />
           </a>
           <div id='line' className='navbar-brand ml-3 bg-secondary'>&nbsp;</div>
-          <p id="desc" className='navbar-brand col-sm-7 text-secondary'>ProjectChain is an advanced blockchain of projects. This application ensures the security and integrity of the projects</p>
+          <p id="desc" className='navbar-brand col-sm-7 text-secondary'>ProjectChain is an advanced blockchain of projects with improved security and transparancy of the projects</p>
         </div>{this.props.isLogged ?
           <button id='profilecard' className='card text-white nav col-sm-3 col-md-2 mr-3 p-3 pt-4 ' onClick={this.props.showUser}>
             <small id="account">

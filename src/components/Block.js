@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { convertBytes } from './helpers';
-import moment from 'moment';
 class Block extends Component {
 
     render() {
         return (
             <section className="proj center col-12" id="projchain">
                 <div className="container center">
-                    {this.props.chain.map((block, key) => {
+                    {this.props.chain.reverse().map((block, key) => {
                         return (
                             <div className="card col-lg-5 mb-5 m-3 p-0 projcard" style={{ maxWidth: '768px' }}>
                                 <p className='ids '>Block Id : {block.blockId}</p>

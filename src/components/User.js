@@ -22,8 +22,8 @@ class User extends Component {
                 ?
                 <div id='user' className="card navbar col-sm-8 col-md-6 mx-auto mt-5 logcard p-0" style={{ borderRadius: '10px' }}>
                     <div className='nav navbar-brand col-12 p-0'>
-                        <button id="logTab" class="col-6  nav-item active" onClick={this.logTab}><b>Login</b></button>
-                        <button id="logTab" class="col-6  nav-item" onClick={this.signTab}><b>SignUp</b></button>
+                        <button id="logTab" className="col-6  nav-item active" onClick={this.logTab}><b>Login</b></button>
+                        <button id="logTab" className="col-6  nav-item" onClick={this.signTab}><b>SignUp</b></button>
                     </div>
                     <div className='card-body col-md-9 col-sm-10 '>
                         <form><div className="form-group align-left text-center pt-5">

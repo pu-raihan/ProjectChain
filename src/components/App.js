@@ -47,7 +47,7 @@ class App extends Component {
       const projCount = await projectchain.methods.projCount().call()
       this.setState({ projCount })
       // Load projects&sort by the newest
-      for (var i = projCount; i >= 1; i--) {
+      for (var i = 1; i <= projCount; i++) {
         const project = await projectchain.methods.projects(i).call()
         this.setState({
           projects: [...this.state.projects, project]
@@ -55,6 +55,11 @@ class App extends Component {
       }
       const userCount = await projectchain.methods.userCount().call()
       this.setState({ userCount })
+      if(userCount===0){
+        this.setState({
+          isLogged:false
+        })
+      }
       for (var j = 1; j <= userCount; j++) {
         const user = await projectchain.methods.users(j).call()
         this.setState({
@@ -272,7 +277,7 @@ class App extends Component {
             isLogged={this.state.isLogged}
             chain={this.state.chain}
             users={this.state.users}
-            tab={this.state.tab}
+            tab={this.state.tab}y
             regUser={this.regUser}
             login={this.login}
             logout={this.logout}

@@ -13,17 +13,17 @@ class Upload extends Component {
                 }} ><div className="form-group">
                         <br />
                         <input
-                            id="projectDesc"
+                            id="projname"
                             type="text"
-                            ref={(input) => { this.projectDesc = input }}
+                            ref={(input) => { this.projname = input }}
                             className="form-control ml-auto mr-auto col-11 "
                             placeholder="Name of your Project!"
                             required />
                         <br />
                         <input
-                            id="projname"
+                            id="projectDesc"
                             type="text"
-                            ref={(input) => { this.projname = input }}
+                            ref={(input) => { this.projectDesc = input }}
                             className="form-control ml-auto mr-auto col-11"
                             placeholder=" Write a description!"
                             required />
