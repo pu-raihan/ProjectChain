@@ -1,6 +1,6 @@
 # ProjectChain
 
-ProjectChain is a blockchain of projects done by university scholars<br>
+ProjectChain is a blockchain of projects of university scholars<br>
 
 ## Features
 
